@@ -1,0 +1,66 @@
+package SupplyDemand;
+
+import java.util.List;
+import java.util.Scanner;
+
+/**
+ * This class would be the point of interaction of the system - it accepts input and provides aggregated output.
+ */
+public class SupplyDemand {
+
+	/**
+	 * Class constructor.
+	 */
+	public SupplyDemand() {
+
+	}
+	
+	public Broker broker = new Broker();
+
+	/**
+	 * This method accepts a single command and carry out the instruction given.
+	 */
+	public void processInput(String command) {
+		
+		String[] line = command.split(",");
+		
+		switch(line[0]) {
+		
+		case "publish":
+			Producer publisher = new Producer(line[3], line[2], line[1]);		
+			publisher.publish(line[3], line[2], line[1]);	
+			System.out.println(command);
+			broker.findSubscriber(publisher);
+			break;
+			
+		case "subscribe":
+			Retailer retailer = new Retailer(line[2],line[1]);
+			broker.addSubcsriber(retailer);
+			//System.out.println(command);
+			break;
+			
+		case "unsubscribe":
+			broker.removeSubscriber(line[2],line[1]);
+			break;
+			
+		}
+		
+	}
+
+	/**
+	 * After each round of execution, this method would be called to fetch all output lines, if there are any. The lines must be ordered by the time they are received.
+	 */
+	public List<String> getAggregatedOutput() {
+		
+		return broker.notifyList();
+	}
+
+	/**
+	 * Finally, this method would be called to clear all saved information in the system, so that information from previous round would not be carried to next round. After calling this method the system should be effectively starting anew.
+	 */
+	public void reset() {
+		
+
+	}
+
+}
